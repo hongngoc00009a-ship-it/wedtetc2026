@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thiệp Tết 2026 — P.E CREW</title>
+
+<style>
+  :root{
+    --env-w: 480px;
+    --env-h: 320px;
+    --accent: #d64545;
+    --accent-dark: #b53a3a;
+    --paper: #fffef8;
+    --gold: #d4af37;
+    --text: #333;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Times New Roman", serif;
+    background:linear-gradient(180deg,#fffdf8,#fff7f2);
+    overflow:hidden;
+    padding:20px;
+  }
+
+  .header{
+    position:fixed;
+    top:10px;
+    width:100%;
+    text-align:center;
+    font-size:1.3rem;
+    font-weight:900;
+    color:#b30000;
+    text-shadow:0 0 6px rgba(0,0,0,.25);
+    z-index:200;
+    pointer-events:none;
+  }
+
+  canvas#fx{
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .petal{
+    position:fixed;
+    font-size:16px;
+    pointer-events:none;
+    z-index:2;
+    opacity:.9;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    0%{transform:translateY(-50px) rotate(0deg);}
+    100%{transform:translateY(110vh) rotate(360deg);}
+  }
+
+  .scene{
+    position:relative;
+    z-index:20;
+  }
+  .envelope{
+    width:var(--env-w);
+    height:var(--env-h);
+    background:var(--accent);
+    border-radius:12px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.18);
+    cursor:pointer;
+    position:relative;
+  }
+  .flap{
+    position:absolute;
+    inset:0;
+    background:var(--accent-dark);
+    clip-path:polygon(0 0,100% 0,50% 100%);
+    transform-origin:top;
+    transition:.9s;
+    z-index:40;
+  }
+  .label{
+    position:absolute;
+    width:100%;
+    top:16%;
+    text-align:center;
+    color:#fff9d6;
+    z-index:38;
+    font-weight:900;
+    text-shadow:0 0 8px rgba(0,0,0,.3);
+  }
+  .label .big{font-size:1.5rem;}
+
+  .card{
+    position:absolute;
+    width:86%;
+    height:80%;
+    background:var(--paper);
+    border-radius:10px;
+    border:3px solid var(--gold);
+    padding:20px;
+    top:10%;
+    left:50%;
+    transform:translateX(-50%) translateY(10px);
+    transition:.9s;
+    z-index:25;
+    opacity:0;
+    overflow:auto;
+    color:var(--text);
+  }
+
+  /* ⭐ CHỈ SỬA DÒNG NÀY */
+  .envelope.open .card{
+    transform:translateX(-50%) translateY(-40%);
+    z-index:100;
+    opacity:1;
+  }
+
+  .envelope.open .flap{
+    transform:rotateX(180deg);
+    z-index:5;
+  }
+
+  .open-btn{
+    position:fixed;
+    top:60px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:10px 20px;
+    background:#d64545;
+    color:white;
+    font-weight:900;
+    border-radius:8px;
+    border:0;
+    z-index:300;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">🌸 Tết Bính Ngọ 2026 — CLB P.E CREW 🌸</div>
+
+<button id="openBtn" class="open-btn">🧧 NHẤN ĐỂ MỞ THƯ 🧧</button>
+
+<canvas id="fx"></canvas>
+
+<div class="scene">
+  <div class="envelope" id="env">
+    <div class="flap"></div>
+
+    <div class="label">
+      <div class="big">Tết Bính Ngọ 2026</div>
+      <div>CLB P.E CREW</div>
+    </div>
+
+    <div class="card" id="card">
+      <h3 style="text-align:center">Gửi tới thầy cô Bộ Môn Kinh Tế — Chuyên ngành Truyền thông & Tổ chức sự kiện</h3>
+
+      <p>
+        Trong suốt quá trình học tập, thầy cô đã không chỉ truyền đạt kiến thức chuyên môn sâu sắc mà còn
+        truyền cảm hứng, tinh thần trách nhiệm và phong cách làm nghề mẫu mực. Sự tận tâm, kiên nhẫn và
+        chỉ bảo tận tình của thầy cô là hành trang quý giá đồng hành cùng chúng em.
+      </p>
+
+      <p>
+        Nhân dịp Xuân Bính Ngọ 2026, xin kính chúc Thầy Cô dồi dào sức khỏe, an khang thịnh vượng và luôn
+        ngập tràn niềm vui trong cuộc sống. Chúc mọi dự định, kế hoạch và các chương trình đào tạo, tổ
+        chức sự kiện ngày càng thành công — CLB P.E CREW sẽ tiếp tục nỗ lực học tập và đồng hành cùng thầy cô.
+        Xin chân thành cảm ơn vì tất cả sự dìu dắt và hỗ trợ.
+      </p>
+
+      <p style="text-align:right;font-weight:800;margin-top:14px;">
+        Thân mến,<br>CLB P.E CREW
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+}
+resize();
+addEventListener("resize",resize);
+
+let fw=[];
+function burst(x,y){
+  for(let i=0;i<25;i++){
+    fw.push({
+      x,y,
+      vx:(Math.random()-0.5)*6,
+      vy:(Math.random()-0.5)*6,
+      life:1,
+      color:`hsl(${Math.random()*360},100%,60%)`
+    });
+  }
+}
+function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  fw.forEach((p,i)=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.vy+=0.03;
+    p.life-=0.015;
+    if(p.life<=0) fw.splice(i,1);
+    ctx.globalAlpha=p.life;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,3,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+
+setInterval(()=>burst(Math.random()*innerWidth,Math.random()*innerHeight*0.4+50),1500);
+
+function petal(){
+  const el=document.createElement("div");
+  el.className="petal";
+  el.innerHTML=Math.random()>0.5?"🌸":"🍃";
+  el.style.left=Math.random()*100+"vw";
+  el.style.animationDuration=(6+Math.random()*4)+"s";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),10000);
+}
+setInterval(petal,700);
+
+const env=document.getElementById("env");
+const card=document.getElementById("card");
+const btn=document.getElementById("openBtn");
+
+let opened=false;
+function toggle(){
+  opened=!opened;
+  if(opened){
+    env.classList.add("open");
+    btn.style.display="none";
+    burst(innerWidth/2, innerHeight*0.25);
+  }else{
+    env.classList.remove("open");
+    setTimeout(()=>btn.style.display="block",600);
+  }
+}
+
+env.onclick=toggle;
+btn.onclick=toggle;
+card.onclick=e=>e.stopPropagation();
+</script>
+
+</body>
+</html>
